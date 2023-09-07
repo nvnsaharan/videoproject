@@ -1,0 +1,101 @@
+.video-footer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 10vh;
+  width: 100%;
+}
+.vc-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #24a6af !important;
+  margin-right: min(30px, 1vw);
+  width: 50px !important;
+  height: 50px !important;
+  border: none;
+  border-radius: 50%;
+  color: white;
+  > *{
+    font-size: 28px !important;
+  }
+  &.active {
+    color: #00cc64;
+  }
+}
+
+.vc-button:hover, .vc-button:focus{
+  background-color: #2cc1cb !important;
+  color: white !important;
+}
+
+.vc-dropdown-button {
+  border-radius: 20px;
+  border: 1px solid #fff;
+  width: 70px;
+  display: flex;
+  justify-content: center;
+  margin-right:min(30px,1vw);
+  position: relative;
+  > .ant-btn {
+    font-size: 30px;
+    color: #fff;
+    display: flex;
+    height: 60px !important;
+    align-items: center;
+    border-width: 0 !important;
+    padding: 0;
+    margin-right: 5px;
+    &:hover {
+      color: #40a9ff;
+    }
+  }
+  > .ant-btn[disabled]{
+    background: transparent;
+    color: #999;
+  }
+  > .ant-dropdown-trigger {
+    position: absolute;
+    width: 100% !important;
+    color: transparent;
+    &:hover{
+      color: transparent !important;
+    }
+  }
+}
+.vc-dropdown-menu {
+  border: 1px solid #747487;
+  background: rgba(0, 0, 0, 0.9) !important;
+  .ant-dropdown-menu-item {
+    padding: 10px 30px;
+    color: #ccc;
+    position: relative;
+    .anticon-check {
+      position: absolute;
+      left: 10px;
+      top: 15px;
+    }
+    &:hover {
+      color: #40a9ff;
+    }
+  }
+  .ant-dropdown-menu-item-group-title {
+    color: #fff;
+    font-weight: 700;
+  }
+}
+
+.end-button{
+  background-color: #ff0000d2 !important;
+  border: none;
+  height: 50px;
+  width: 100px;
+  cursor: pointer;
+  border-radius: 50px;
+  font-weight: 700;
+  margin-right: min(30px, 1vw);
+  &:hover{
+    color: white !important;
+    background-color: red !important;
+  }
+}

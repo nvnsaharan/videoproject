@@ -1,0 +1,36 @@
+[debug] [2023-09-07T15:57:35.664Z] ----------------------------------------------------------------------
+[debug] [2023-09-07T15:57:35.665Z] Command:       /usr/local/bin/node /usr/local/bin/firebase login --reauth
+[debug] [2023-09-07T15:57:35.665Z] CLI Version:   12.5.2
+[debug] [2023-09-07T15:57:35.665Z] Platform:      darwin
+[debug] [2023-09-07T15:57:35.665Z] Node Version:  v18.17.0
+[debug] [2023-09-07T15:57:35.666Z] Time:          Thu Sep 07 2023 21:27:35 GMT+0530 (India Standard Time)
+[debug] [2023-09-07T15:57:35.666Z] ----------------------------------------------------------------------
+[debug] 
+[info] 
+[info] Visit this URL on this device to log in:
+[info] https://accounts.google.com/o/oauth2/auth?client_id=563584335869-fgrhgmd47bqnekij5i8b5pr03ho849e6.apps.googleusercontent.com&scope=email%20openid%20https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fcloudplatformprojects.readonly%20https%3A%2F%2Fwww.googleapis.com%2Fauth%2Ffirebase%20https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fcloud-platform&response_type=code&state=405411783&redirect_uri=http%3A%2F%2Flocalhost%3A9005
+[info] 
+[info] Waiting for authentication...
+[debug] [2023-09-07T15:57:40.230Z] >>> [apiv2][query] POST https://accounts.google.com/o/oauth2/token [none]
+[debug] [2023-09-07T15:57:40.231Z] >>> [apiv2][body] POST https://accounts.google.com/o/oauth2/token [omitted]
+[debug] [2023-09-07T15:57:40.313Z] *** [apiv2] error from fetch(https://accounts.google.com/o/oauth2/token, {"headers":{},"method":"POST","body":{"_overheadLength":543,"_valueLength":208,"_valuesToMeasure":[],"writable":false,"readable":true,"dataSize":0,"maxDataSize":2097152,"pauseStreams":true,"_released":true,"_streams":[],"_currentStream":null,"_insideLoop":false,"_pendingNext":false,"_boundary":"--------------------------176941173287005868817529","_events":{},"_eventsCount":1}}): FetchError: request to https://accounts.google.com/o/oauth2/token failed, reason: self-signed certificate in certificate chain
+[debug] [2023-09-07T15:57:40.314Z] Token Fetch Error: FirebaseError: Failed to make request to https://accounts.google.com/o/oauth2/token
+    at RetryOperation._fn (/usr/local/lib/node_modules/firebase-tools/lib/apiv2.js:239:31)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+[debug] [2023-09-07T15:57:40.317Z] >>> [apiv2][query] POST https://auth.firebase.tools/attest [none]
+[debug] [2023-09-07T15:57:40.317Z] >>> [apiv2][body] POST https://auth.firebase.tools/attest {"session_id":"6b72733f-d04f-4dc2-b777-576468deba63"}
+[debug] [2023-09-07T15:57:40.803Z] <<< [apiv2][status] POST https://auth.firebase.tools/attest 200
+[debug] [2023-09-07T15:57:40.803Z] <<< [apiv2][body] POST https://auth.firebase.tools/attest {"token":"5pTd1S-_jJ1DARHOxJV1kHpZBTLiFbICMJ3n-QVHCgg"}
+[info] 
+[info] To sign in to the Firebase CLI:
+[info] 
+[info] 1. Take note of your session ID:
+[info] 
+[info]    6B727
+[info] 
+[info] 2. Visit the URL below on any device and follow the instructions to get your code:
+[info] 
+[info]    https://auth.firebase.tools/login?code_challenge=5ENJU-LP5nXINNl3gax7qITrBx_1wXa6baMDfsRNE_g&session=6b72733f-d04f-4dc2-b777-576468deba63&attest=5pTd1S-_jJ1DARHOxJV1kHpZBTLiFbICMJ3n-QVHCgg
+[info] 
+[info] 3. Paste or enter the authorization code below once you have it:
+[info] 

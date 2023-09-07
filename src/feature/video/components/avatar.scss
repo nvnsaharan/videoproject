@@ -1,0 +1,72 @@
+.avatar {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  pointer-events:visible;
+  &.avatar-active {
+    outline: 3px solid #d4e280;
+  }
+  .corner-name {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    display: flex;
+    padding: 3px 5px;
+    align-items: center;
+    max-width: 100%;
+    height: 25px;
+    font-size: 14px;
+    color: #fff;
+    background-color: rgba(0,0,0,0.6);
+    span.anticon{
+      margin-right: 5px;
+    }
+  }
+  .center-name {
+    font-size: 38px;
+    font-weight: 700;
+    color: #fff;
+  }
+  .more-button {
+    position: absolute;
+    top:3px;
+    right: 3px;
+    border:0;
+    border-radius: 3px;
+    background: #0171eB;
+    display: none;
+    &:hover{
+      background: #2681f2;
+    }
+    &.more-button-active{
+      display: inline-block;
+    }
+  }
+  .avatar-volume{
+    position: absolute;
+    display: flex;
+    align-items: center;
+    opacity: 0.1;
+    top: 10%;
+    right: 2%;
+    width: 20%;
+    &:hover{
+      opacity: 0.5;
+    }
+    label {
+      transform: translateY(-10px);
+      color: #ccc;
+      font-size: 12px;
+      margin-right: 5px;
+    }
+    .ant-slider{
+      flex:1;
+    }
+    .ant-slider-mark-text {
+      color: #ccc;
+    }
+  }
+}
