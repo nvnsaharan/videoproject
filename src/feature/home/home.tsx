@@ -1,11 +1,12 @@
 /* eslint-disable no-restricted-globals */
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { RouteComponentProps, useHistory } from 'react-router-dom';
 import Video from '../video/video';
 import VideoSingle from '../video/video-single';
 import VideoNonSAB from '../video/video-non-sab';
 import Chat from '../chat/chat';
 import './home.scss';
+import zoomContext from '../../context/zoom-context';
 
 interface HomeProps extends RouteComponentProps {
   meetingEnded: boolean;
@@ -17,6 +18,22 @@ interface HomeProps extends RouteComponentProps {
 const Home: React.FunctionComponent<HomeProps> = (props) => {
   const [chatVisible, setChatVisible] = useState(false)
   const { status, isSupportGalleryView, galleryViewWithoutSAB, meetingEnded } = props;
+
+  const zmClient = useContext(zoomContext);
+
+  useEffect(() => {
+    const handleTabClose = async (event: { preventDefault: () => void; returnValue: string; }) => {
+      event.preventDefault();
+      console.log('beforeunload event triggered');
+      await zmClient.leave()
+      return (event.returnValue =
+        'Are you sure you want to exit?');
+    };
+    window.addEventListener('beforeunload', handleTabClose);
+    return () => {
+      window.removeEventListener('beforeunload', handleTabClose);
+    };
+  }, []);
 
   const handleChatDiv = () => {
     setChatVisible(!chatVisible)

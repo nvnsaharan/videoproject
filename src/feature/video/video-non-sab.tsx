@@ -133,6 +133,19 @@ const VideoContainer: React.FunctionComponent<VideoContainerProps> = (props) => 
   }, [mediaStream, sharedContentDimension, shareViewDimension]);
   const networkQuality = useNetworkQuality(zmClient);
 
+  const doctorConsultationLines = [
+    "Hello, I'm Naveen, how can I help you today?",
+    "Please tell me more about your symptoms and when they started.",
+    "Have you experienced any changes in your medical history since our last visit?",
+    "Let's discuss any medications or treatments you're currently using.",
+    "Are you experiencing any pain or discomfort? If so, please describe it.",
+    "It's important to understand your concerns fully, so please feel free to ask any questions.",
+    "Based on your symptoms, I'm considering [possible diagnosis].",
+    "Here are the treatment options available, and we can discuss the pros and cons of each.",
+    "Let's create a personalized care plan tailored to your needs and preferences.",
+    "Remember, I'm here to support you, so don't hesitate to reach out if you have any concerns or if your condition changes."
+  ];
+  
   return (
     <div className="viewport">
       <div
@@ -219,7 +232,9 @@ const VideoContainer: React.FunctionComponent<VideoContainerProps> = (props) => 
       <VideoFooter handleInfoDivVisible={handleInfoDivVisible} handleChatDiv={props.handleChatDiv} className="video-operations" sharing shareRef={selfShareRef} />
       {infoDivVisible ? 
         <Draggable>
-          <div>I can now be moved around!</div>
+          <div>
+            {doctorConsultationLines.map((line, index) => <div className='suggested-text' key={index}>{line}</div>)}
+          </div>
         </Draggable> : ""}
       {totalPage > 1 && <Pagination page={page} totalPage={totalPage} setPage={setPage} inSharing={isSharing} />}
     </div>

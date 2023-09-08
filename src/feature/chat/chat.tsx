@@ -63,6 +63,14 @@ const ChatContainer = () => {
     },
     [chatClient]
   );
+
+  useEffect(() => {
+    const historyChatList = chatClient.getHistory();
+    historyChatList.map((chat) => {
+      onChatMessage(chat)
+    })
+  }, [])
+  
   const onChatInput = useCallback((event: React.ChangeEvent<HTMLTextAreaElement>) => {
     setChatDraft(event.target.value);
   }, []);
