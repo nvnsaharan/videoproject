@@ -1,11 +1,5 @@
-import React from 'react';
-import { Button, Dropdown, Menu } from 'antd';
-import classNames from 'classnames';
-import { UpOutlined } from '@ant-design/icons';
-import { IconFont } from '../../../component/icon-font';
-import { getAntdDropdownMenu, getAntdItem } from './video-footer-utils';
-const { Button: DropdownButton } = Dropdown;
-const { Item: MenuItem } = Menu;
+import React, { useState } from 'react';
+import { Button, Modal } from 'antd';
 interface LeaveButtonProps {
   onLeaveClick: () => void;
   onEndClick: () => void;
@@ -15,12 +9,40 @@ interface LeaveButtonProps {
 const LeaveButton = (props: LeaveButtonProps) => {
   const { onLeaveClick, onEndClick, isHost } = props;
 
-  return <Button
+  const [isModalOpen, setisModalOpen] = useState(false)
+
+  return (<>
+       <Button
           className="end-button"
           ghost={true}
-          onClick={onLeaveClick}
-          title="Leave session"
-        >Leave Call</Button>
+          onClick={isHost ? () => setisModalOpen(true) : onLeaveClick}
+          title="Leave session">
+          Leave Call
+        </Button>
+        <Modal 
+          title="Host Leave" 
+          open={isModalOpen}
+          onOk={onLeaveClick} 
+          onCancel={() => setisModalOpen(false)} 
+          footer={[
+            <Button type="text" danger onClick={() => setisModalOpen(false)}>
+              Cancel
+            </Button>,
+            <Button danger onClick={onLeaveClick}>
+              Leave Meeting
+            </Button>,
+            <Button
+              type="primary" 
+              danger
+              onClick={onEndClick}
+            >
+              End Meeting
+            </Button>,
+          ]}
+          >
+          Host can end the meeting.
+        </Modal>
+      </>)
 };
 
 export { LeaveButton };

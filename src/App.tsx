@@ -10,8 +10,8 @@ import ZoomMediaContext from './context/media-context';
 import LoadingLayer from './component/loading-layer';
 import { MediaStream } from './index-types';
 import './App.css';
+import Thanks from './feature/thanks/thanks';
 
-import { isAndroidBrowser } from './utils/platform';
 interface AppProps {
   meetingArgs: {
     sdkKey: string;
@@ -105,6 +105,9 @@ function App(props: AppProps) {
   const [mediaState, dispatch] = useReducer(mediaReducer, mediaShape);
   const [mediaStream, setMediaStream] = useState<MediaStream | null>(null);
   const [isSupportGalleryView, setIsSupportGalleryView] = useState<boolean>(true);
+  const [isEndModalVisible, setIsEndModalVisible] = useState(false)
+  const [meetingEnded, setMeetingEnded] = useState(false)
+
   const zmClient = useContext(ZoomContext);
   let webEndpoint: any;
   if (webEndpointArg) {
@@ -168,10 +171,7 @@ function App(props: AppProps) {
         setStatus('closed');
         dispatch({ type: 'reset-media' });
         if (payload.reason === 'ended by host') {
-          Modal.warning({
-            title: 'Meeting ended',
-            content: 'This meeting has been ended by host'
-          });
+          setIsEndModalVisible(true)
         }
       }
     },
@@ -218,19 +218,29 @@ function App(props: AppProps) {
       {!loading && (
         <ZoomMediaContext.Provider value={mediaContext}>
           <Router>
-                      <Switch>
-                        <Route
-                          path="/"
-                          render={(props) => (
-                            <Home {...props} status={status} onLeaveOrJoinSession={onLeaveOrJoinSession} isSupportGalleryView={isSupportGalleryView} galleryViewWithoutSAB={galleryViewWithoutSAB} />
-                          )}
-                          exact
-                        />
-                        <Route path="/index.html" component={Home} exact />
-                      </Switch>
-                    </Router>
+            <Switch>
+              <Route
+                path="/"
+                render={(props) => (
+                  <Home {...props} status={status} meetingEnded={meetingEnded} onLeaveOrJoinSession={onLeaveOrJoinSession} isSupportGalleryView={isSupportGalleryView} galleryViewWithoutSAB={galleryViewWithoutSAB} />
+                )}
+                exact
+              />
+              <Route path="/index.html" component={Home} exact />
+              <Route path="/meeting-ended" component={Thanks} exact />
+            </Switch>
+          </Router>
         </ZoomMediaContext.Provider>
       )}
+      <Modal title="Meeting ended" 
+        open={isEndModalVisible} 
+        onOk={() => {
+          setMeetingEnded(true)
+          setIsEndModalVisible(false)
+        }} 
+        closable={false} >
+        This meeting has been ended by host
+      </Modal>
     </div>
   );
 }

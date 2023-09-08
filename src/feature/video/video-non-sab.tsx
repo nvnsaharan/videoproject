@@ -18,6 +18,7 @@ import { isShallowEqual } from '../../utils/util';
 import { useSizeCallback } from '../../hooks/useSizeCallback';
 import { SELF_VIDEO_ID } from './video-constants';
 import { useNetworkQuality } from './hooks/useNetworkQuality';
+import Draggable from 'react-draggable';
 interface SelfViewContainer {
   id: string;
   className: string;
@@ -112,6 +113,12 @@ const VideoContainer: React.FunctionComponent<VideoContainerProps> = (props) => 
       });
     }
   }, [isSharing, sharedContentDimension, containerDimension]);
+
+  const [infoDivVisible, setInfoDivVisible] = useState(false)
+
+  const handleInfoDivVisible = () => {
+    setInfoDivVisible(!infoDivVisible)
+  }
 
   const onShareContainerResize = useCallback(({ width, height }) => {
     _.throttle(() => {
@@ -209,7 +216,11 @@ const VideoContainer: React.FunctionComponent<VideoContainerProps> = (props) => 
           })}
         </ul>
       </div>
-      <VideoFooter handleChatDiv={props.handleChatDiv} className="video-operations" sharing shareRef={selfShareRef} />
+      <VideoFooter handleInfoDivVisible={handleInfoDivVisible} handleChatDiv={props.handleChatDiv} className="video-operations" sharing shareRef={selfShareRef} />
+      {infoDivVisible ? 
+        <Draggable>
+          <div>I can now be moved around!</div>
+        </Draggable> : ""}
       {totalPage > 1 && <Pagination page={page} totalPage={totalPage} setPage={setPage} inSharing={isSharing} />}
     </div>
   );

@@ -9,6 +9,7 @@ import AudioVideoStatisticModal from './audio-video-statistic';
 import ZoomMediaContext from '../../../context/media-context';
 import { useUnmount, useMount } from '../../../hooks';
 import { MediaDevice } from '../video-types';
+import { useHistory } from 'react-router-dom';
 import './video-footer.scss';
 import { isAndroidOrIOSBrowser } from '../../../utils/platform';
 import { getPhoneCallStatusDescription, SELF_VIDEO_ID } from '../video-constants';
@@ -23,17 +24,18 @@ import {
 } from '@zoom/videosdk';
 import { LeaveButton } from './leave';
 import { VideoMaskModel } from './video-mask-modal';
-import { MessageOutlined } from '@ant-design/icons';
+import { MessageOutlined, UnorderedListOutlined } from '@ant-design/icons';
 interface VideoFooterProps {
   className?: string;
   shareRef?: MutableRefObject<HTMLCanvasElement | null>;
   sharing?: boolean;
   handleChatDiv: Function;
+  handleInfoDivVisible: Function;
 }
 
 const isAudioEnable = typeof AudioWorklet === 'function';
 const VideoFooter = (props: VideoFooterProps) => {
-  const { className, shareRef, sharing } = props;
+  const { className, shareRef, sharing, handleInfoDivVisible } = props;
   const [isStartedAudio, setIsStartedAudio] = useState(false);
   const [isStartedVideo, setIsStartedVideo] = useState(false);
   const [audio, setAudio] = useState('');
@@ -56,6 +58,7 @@ const VideoFooter = (props: VideoFooterProps) => {
   const [sharePrivilege, setSharePrivileg] = useState(SharePrivilege.Unlocked);
   const [activePlaybackUrl, setActivePlaybackUrl] = useState('');
 
+  const history = useHistory();
   const zmClient = useContext(ZoomContext);
   const { mediaStream } = useContext(ZoomMediaContext);
 
@@ -211,11 +214,13 @@ const VideoFooter = (props: VideoFooterProps) => {
   const onLeaveClick = useCallback(async () => {
     console.log('onLeaveClick');
     await zmClient.leave();
+    history.push('/meeting-ended')
   }, [zmClient]);
 
   const onEndClick = useCallback(async () => {
     console.log('onEndClick');
     await zmClient.leave(true);
+    history.push('/meeting-ended')
   }, [zmClient]);
 
   const onPassivelyStopShare = useCallback(({ reason }) => {
@@ -417,9 +422,18 @@ const VideoFooter = (props: VideoFooterProps) => {
         isStartedVideo={isStartedVideo}
       />
 
+      {zmClient.isHost() ? 
+        <Button
+        icon={<UnorderedListOutlined />}
+        className='vc-button'
+        onClick={() => handleInfoDivVisible()}
+        ></Button>
+       : ""}
+
       {!mediaStream?.isSupportVirtualBackground() && (
         <VideoMaskModel visible={videoMaskVisible} setVisible={setVideoMaskVisible} isMirrored={isMirrored} />
       )}
+      
     </div>
   );
 };

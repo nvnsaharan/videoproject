@@ -17,6 +17,7 @@ import { isShallowEqual } from '../../utils/util';
 import { useLocalVolume } from './hooks/useLocalVolume';
 import './video.scss';
 import { useNetworkQuality } from './hooks/useNetworkQuality';
+import Draggable from 'react-draggable';
 
 
 interface  VideoContainerProps{
@@ -49,6 +50,12 @@ const VideoContainer: React.FunctionComponent<VideoContainerProps> = (props) => 
   });
   const { userVolumeList, setLocalVolume } = useLocalVolume();
   const networkQuality = useNetworkQuality(zmClient);
+
+  const [infoDivVisible, setInfoDivVisible] = useState(false)
+
+  const handleInfoDivVisible = () => {
+    setInfoDivVisible(!infoDivVisible)
+  }
 
   useParticipantsChange(zmClient, (payload) => {
     setParticipants(payload);
@@ -194,7 +201,11 @@ const VideoContainer: React.FunctionComponent<VideoContainerProps> = (props) => 
           />
         )}
       </div>
-      <VideoFooter handleChatDiv={props.handleChatDiv} className="video-operations" sharing shareRef={selfShareRef} />
+      <VideoFooter handleInfoDivVisible={handleInfoDivVisible} handleChatDiv={props.handleChatDiv} className="video-operations" sharing shareRef={selfShareRef} />
+      {infoDivVisible ? 
+        <Draggable>
+          <div>I can now be moved around!</div>
+        </Draggable> : ""}
     </div>
   );
 };
