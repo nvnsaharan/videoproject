@@ -1,0 +1,30 @@
+.sidebar-list{
+  width: 60px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  margin-right: 10px;
+}
+
+.side-bar-avatar{
+  height: 50px !important;
+  width: 50px !important;
+}
+
+.side-bar-button{
+  width: 55px;
+  height: 55px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: transparent;
+  border-radius: 50%;
+  margin-bottom: 10px;
+  border: none;
+}
+
+.side-bar-button-border{
+  border: 5px solid #24a6b0;
+}

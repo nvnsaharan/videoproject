@@ -1,5 +1,6 @@
 .chat-wrap {
   width: 33vw;
+  height: 98vh;
   max-width: 800px;
   background: #294b6d66;
   display: flex;
@@ -9,45 +10,40 @@
   box-sizing: border-box;
   padding-bottom: 7px;
   color: white;
-  margin: 25px 10px;
+  margin: 1vh 10px;
+}
 
+.chat-user-detail {
+  height: 35%;
+  background-color: #2a425f;
+  margin: 5px;
+  border-radius: 13px;
+}
+
+.chat-suggestion-message {
+  height: 63%;
+  background-color: #2a425f;
+  border-radius: 13px;
+  margin: 5px;
+  padding: 20px 10px;
+  overflow: auto;
+}
+
+.chat-user-bio {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+  align-items: center;
   h2 {
-    height: 45px;
-    line-height: 45px;
-    color: #24a6af;
-  }
-
-  .chat-message-wrap {
-    flex-grow: 1;
-    overflow-y: auto;
-    border-bottom: 1px solid #eee;
-    height: 65vh;
-  }
-
-  .chat-message-box {
-    height: 100px;
-    box-sizing: border-box;
-    padding: 0 5px;
-
-    >textarea {
-      padding: 5px 20px;
-      height: 100%;
-      width: 100%;
-      resize: none;
-      background-color: #6b758e;
-      color: white;
-      font-weight: 600;
-      border: solid 1px #24a6af;
-      border-radius: 16px;
-    }
+    color: white;
   }
 }
 
-.chat-disabled {
-  height: 155px;
+.user-problem-list{
   display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 18px;
-  flex-shrink: 0;
+  flex-direction: column;
+  text-align: initial;
+  li {
+    padding: 5px 15px;
+  }
 }

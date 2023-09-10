@@ -100,27 +100,11 @@
   }
 }
 
-.react-draggable{
-  position: absolute;
-  height: 250px;
-  background-color: #27446269;
-  color: white;
-  font-weight: 500;
-  width: 250px;
-  cursor: move;
-  padding: 10px;
-  border-radius: 10px;
-  overflow-y: auto;
-  border: 1px solid #20a6ae57;
-  right: 5%;
-  display: flex;
-  flex-direction: column;
-  text-align: initial;
-}
-
 .suggested-text {
   background-color: #6b758e5c;
-  padding: 5px;
+  padding: 5px 10px;
   border-radius: 5px;
   margin-bottom: 5px;
+  text-align: initial;
+  font-weight: 600;
 }

@@ -51,12 +51,6 @@ const VideoContainer: React.FunctionComponent<VideoContainerProps> = (props) => 
   const { userVolumeList, setLocalVolume } = useLocalVolume();
   const networkQuality = useNetworkQuality(zmClient);
 
-  const [infoDivVisible, setInfoDivVisible] = useState(false)
-
-  const handleInfoDivVisible = () => {
-    setInfoDivVisible(!infoDivVisible)
-  }
-
   useParticipantsChange(zmClient, (payload) => {
     setParticipants(payload);
   });
@@ -206,21 +200,17 @@ const VideoContainer: React.FunctionComponent<VideoContainerProps> = (props) => 
         {activeUser && (
           <Avatar
             participant={activeUser}
+            participantId={0}
             isActive={false}
             className="single-view-avatar"
             volume={userVolumeList.find((u) => u.userId === activeUser.userId)?.volume}
             setLocalVolume={setLocalVolume}
+            handlePinVideo={() => {}}
             networkQuality={networkQuality[`${activeUser.userId}`]}
           />
         )}
       </div>
-      <VideoFooter handleInfoDivVisible={handleInfoDivVisible} handleChatDiv={props.handleChatDiv} className="video-operations" sharing shareRef={selfShareRef} />
-      {infoDivVisible ? 
-        <Draggable>
-          <div>
-            {doctorConsultationLines.map((line, index) => <div className='suggested-text' key={index}>{line}</div>)}
-          </div>
-        </Draggable> : ""}
+      <VideoFooter handleChatDiv={props.handleChatDiv} className="video-operations" sharing shareRef={selfShareRef} />
     </div>
   );
 };

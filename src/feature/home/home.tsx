@@ -3,7 +3,6 @@ import React, { useContext, useEffect, useState } from 'react';
 import { RouteComponentProps, useHistory } from 'react-router-dom';
 import Video from '../video/video';
 import VideoSingle from '../video/video-single';
-import VideoNonSAB from '../video/video-non-sab';
 import Chat from '../chat/chat';
 import './home.scss';
 import zoomContext from '../../context/zoom-context';
@@ -17,6 +16,7 @@ interface HomeProps extends RouteComponentProps {
 }
 const Home: React.FunctionComponent<HomeProps> = (props) => {
   const [chatVisible, setChatVisible] = useState(false)
+  const [chatUser, setChatUser] = useState<Number>(0)
   const { status, isSupportGalleryView, galleryViewWithoutSAB, meetingEnded } = props;
 
   const zmClient = useContext(zoomContext);
@@ -35,8 +35,16 @@ const Home: React.FunctionComponent<HomeProps> = (props) => {
     };
   }, []);
 
-  const handleChatDiv = () => {
-    setChatVisible(!chatVisible)
+  const handleChatDiv = (userId:Number) => {
+    console.log("not else",userId)
+    if(userId === 0){
+      setChatVisible(false)
+      setChatUser(0)
+    } else {
+      console.log(userId)
+      setChatUser(userId)
+      setChatVisible(true)
+    }
   }
   const history = useHistory()
   useEffect(() => {
@@ -54,8 +62,8 @@ const Home: React.FunctionComponent<HomeProps> = (props) => {
   }
   return (
     <>
-      {isSupportGalleryView ? <Video handleChatDiv={handleChatDiv} /> : galleryViewWithoutSAB ? <VideoNonSAB handleChatDiv={handleChatDiv} /> : <VideoSingle handleChatDiv={handleChatDiv} />}
-      { chatVisible ? <Chat /> : "" }
+      {isSupportGalleryView ? <Video handleChatDiv={handleChatDiv} /> : <VideoSingle handleChatDiv={handleChatDiv} />}
+      { zmClient.isHost() ? (chatVisible ? <Chat chatUser={chatUser} /> : "") : "" }
     </>
   );
 };

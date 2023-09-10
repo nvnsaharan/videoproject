@@ -30,12 +30,11 @@ interface VideoFooterProps {
   shareRef?: MutableRefObject<HTMLCanvasElement | null>;
   sharing?: boolean;
   handleChatDiv: Function;
-  handleInfoDivVisible: Function;
 }
 
 const isAudioEnable = typeof AudioWorklet === 'function';
 const VideoFooter = (props: VideoFooterProps) => {
-  const { className, shareRef, sharing, handleInfoDivVisible } = props;
+  const { className, shareRef, sharing } = props;
   const [isStartedAudio, setIsStartedAudio] = useState(false);
   const [isStartedVideo, setIsStartedVideo] = useState(false);
   const [audio, setAudio] = useState('');
@@ -393,25 +392,14 @@ const VideoFooter = (props: VideoFooterProps) => {
         isMirrored={isMirrored}
         isBlur={isBlur}
       />
+      {zmClient.isHost() ? 
+        <Button
+        icon={<UnorderedListOutlined />}
+        className='vc-button'
+        onClick={() => props.handleChatDiv()}
+        ></Button>
+       : ""}
       <LeaveButton onLeaveClick={onLeaveClick} isHost={zmClient.isHost()} onEndClick={onEndClick} />
-      {sharing && (
-        <ScreenShareButton
-          sharePrivilege={sharePrivilege}
-          isHostOrManager={zmClient.isHost() || zmClient.isManager()}
-          isStartedScreenShare={isStartedScreenShare}
-          onScreenShareClick={onScreenShareClick}
-          onSharePrivilegeClick={async (privilege) => {
-            await mediaStream?.setSharePrivilege(privilege);
-            setSharePrivileg(privilege);
-          }}
-        />
-      )}
-
-      <Button
-      icon={<MessageOutlined />}
-      className='vc-button'
-      onClick={() => props.handleChatDiv()}
-      ></Button>
 
       <AudioVideoStatisticModal
         visible={statisticVisible}
@@ -421,14 +409,6 @@ const VideoFooter = (props: VideoFooterProps) => {
         isMuted={isMuted}
         isStartedVideo={isStartedVideo}
       />
-
-      {zmClient.isHost() ? 
-        <Button
-        icon={<UnorderedListOutlined />}
-        className='vc-button'
-        onClick={() => handleInfoDivVisible()}
-        ></Button>
-       : ""}
 
       {!mediaStream?.isSupportVirtualBackground() && (
         <VideoMaskModel visible={videoMaskVisible} setVisible={setVideoMaskVisible} isMirrored={isMirrored} />

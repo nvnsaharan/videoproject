@@ -15,6 +15,7 @@
       justify-content: center;
       align-items: center;
       overflow: hidden;
+      position: relative;
     }
     .share-container-viewport{
       display: inline-block;
@@ -35,7 +36,6 @@
     &.in-sharing{
       width: 264px;
       flex-shrink: 0;
-      border-left: 1px solid #333;
     }
     .video-canvas{
       width: 100%;

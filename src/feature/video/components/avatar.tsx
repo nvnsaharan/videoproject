@@ -1,6 +1,5 @@
-import React, { useContext, useRef, useState, useCallback } from 'react';
-import { AudioMutedOutlined, CheckOutlined, MoreOutlined } from '@ant-design/icons';
-import { Slider, Dropdown, Button } from 'antd';
+import { useContext, useRef, useState, useCallback } from 'react';
+import { AudioMutedOutlined, CheckOutlined, PushpinOutlined } from '@ant-design/icons';
 import type { NetworkQuality } from '@zoom/videosdk';
 import { IconFont } from '../../../component/icon-font';
 import classNames from 'classnames';
@@ -9,9 +8,11 @@ import { Participant } from '../../../index-types';
 import ZoomContext from '../../../context/zoom-context';
 import { useHover } from '../../../hooks';
 import type { AdvancedFeatureSwitch } from '../video-types';
-import { getAntdDropdownMenu, getAntdItem } from './video-footer-utils';
+import { getAntdItem } from './video-footer-utils';
+import Avatars from 'react-avatar';
 interface AvatarProps {
   participant: Participant;
+  participantId: number;
   style?: { [key: string]: string };
   isActive: boolean;
   className?: string;
@@ -21,11 +22,13 @@ interface AvatarProps {
   networkQuality?: NetworkQuality;
   onAdvancedFeatureToggle?: (userId: number, key: string) => void;
   setLocalVolume?: (userId: number, volume: number) => void;
+  handlePinVideo: Function;
 }
 const networkQualityIcons = ['bad', 'bad', 'normal', 'good', 'good', 'good'];
 const Avatar = (props: AvatarProps) => {
   const {
     participant,
+    participantId,
     style,
     isActive,
     className,
@@ -34,7 +37,8 @@ const Avatar = (props: AvatarProps) => {
     isUserCameraControlled,
     networkQuality,
     setLocalVolume,
-    onAdvancedFeatureToggle
+    onAdvancedFeatureToggle,
+    handlePinVideo
   } = props;
   const [isDropdownVisible, setIsDropdownVisbile] = useState(false);
   const { displayName, audio, muted, bVideoOn, userId } = participant;
@@ -81,33 +85,19 @@ const Avatar = (props: AvatarProps) => {
           {bVideoOn && <span>{displayName}</span>}
         </div>
       )}
-      {!bVideoOn && <p className="center-name">{displayName}</p>}
-      {menu.length > 0 && (
-        <Dropdown
-          menu={getAntdDropdownMenu(menu, onMenuItemClick)}
-          placement="bottomRight"
-          trigger={['click']}
-          onOpenChange={onDropDownVisibleChange}
-        >
-          <Button
-            icon={<MoreOutlined />}
-            className={classNames('more-button', {
-              'more-button-active': isHover || isDropdownVisible
-            })}
-            type="primary"
-            size="small"
-          />
-        </Dropdown>
-      )}
+      {!bVideoOn &&
+      <div>
+        <Avatars name={displayName} />
+        <div className="corner-name">
+          <span>{displayName}</span>
+        </div>
+      </div> }
       {isHover &&
-        advancedFeature?.adjustVolumn.enabled &&
-        advancedFeature.adjustVolumn.toggled &&
-        zmClient.getSessionInfo().userId !== userId && (
-          <div className={classNames('avatar-volume')}>
-            <label>Volume:</label>
-            <Slider marks={{ 0: '0', 100: '100' }} defaultValue={100} onChange={onSliderChange} value={volume} />
+         (
+          <div className="hover-pin-botton">
+            <PushpinOutlined onClick={() => handlePinVideo(participantId)} />
           </div>
-        )}
+      )}
     </div>
   );
 };

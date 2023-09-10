@@ -20,6 +20,7 @@ import RemoteControlPanel, { RemoteControlIndication } from './components/remote
 import { useCameraControl } from './hooks/useCameraControl';
 import { useNetworkQuality } from './hooks/useNetworkQuality';
 import Draggable from 'react-draggable';
+import SideParticipentBar from '../sidebar/SideParticipentBar';
 
 interface  VideoContainerProps{
   handleChatDiv: Function;
@@ -43,6 +44,19 @@ const VideoContainer: React.FunctionComponent<VideoContainerProps> = (props) => 
     width: 0,
     height: 0
   });
+  const [pinnedVideo, setPinnedVideo] = useState<Number>(0)
+
+  const handlePinVideo = (userId : Number) => {
+    if(pinnedVideo == userId){
+      setPinnedVideo(0)
+      props.handleChatDiv(0)
+    } else {
+      console.log(userId)
+      props.handleChatDiv(userId)
+      setPinnedVideo(userId)
+    }
+  }
+  
   const canvasDimension = useCanvasDimension(mediaStream, videoRef);
   const activeVideo = useActiveVideo(zmClient);
   const { page, pageSize, totalPage, totalSize, setPage } = usePagination(zmClient, canvasDimension);
@@ -77,30 +91,12 @@ const VideoContainer: React.FunctionComponent<VideoContainerProps> = (props) => 
     switchCamera
   } = useCameraControl(zmClient, mediaStream);
 
-  const doctorConsultationLines = [
-    "Hello, I'm Naveen, how can I help you today?",
-    "Please tell me more about your symptoms and when they started.",
-    "Have you experienced any changes in your medical history since our last visit?",
-    "Let's discuss any medications or treatments you're currently using.",
-    "Are you experiencing any pain or discomfort? If so, please describe it.",
-    "It's important to understand your concerns fully, so please feel free to ask any questions.",
-    "Based on your symptoms, I'm considering [possible diagnosis].",
-    "Here are the treatment options available, and we can discuss the pros and cons of each.",
-    "Let's create a personalized care plan tailored to your needs and preferences.",
-    "Remember, I'm here to support you, so don't hesitate to reach out if you have any concerns or if your condition changes."
-  ];
-
   const { advancedSwitch, toggleAdjustVolume, toggleFarEndCameraControl } = useAdvancedFeatureSwitch(
     zmClient,
     mediaStream,
     visibleParticipants
   );
   const networkQuality = useNetworkQuality(zmClient);
-  const [infoDivVisible, setInfoDivVisible] = useState(false)
-
-  const handleInfoDivVisible = () => {
-    setInfoDivVisible(!infoDivVisible)
-  }
 
   const isSharing = isRecieveSharing || isStartedShare;
   useEffect(() => {
@@ -143,40 +139,43 @@ const VideoContainer: React.FunctionComponent<VideoContainerProps> = (props) => 
   );
   return (
     <div className="viewport">
-      <div
+      {zmClient.isHost() ? 
+        <SideParticipentBar 
+        handlePinVideo={handlePinVideo}
+        pinnedVideo={pinnedVideo}
+        />  : ""}
+      {/* <div
         className={classnames('share-container', {
-          'in-sharing': isSharing
+          'in-sharing': pinnedVideo
         })}
-        ref={shareContainerRef}
       >
-        <div
-          className="share-container-viewport"
-          style={{
-            width: `${shareViewDimension.width}px`,
-            height: `${shareViewDimension.height}px`
-          }}
-        >
-          <canvas className={classnames('share-canvas', { hidden: isStartedShare })} ref={shareRef} />
-          {mediaStream?.isStartShareScreenWithVideoElement() ? (
-            <video
-              className={classnames('share-canvas', {
-                hidden: isRecieveSharing
-              })}
-              ref={selfShareRef}
-            />
-          ) : (
-            <canvas
-              className={classnames('share-canvas', {
-                hidden: isRecieveSharing
-              })}
-              ref={selfShareRef}
-            />
-          )}
-        </div>
-      </div>
+          <canvas className={classnames('share-canvas')} ref={shareRef} />
+          {visibleParticipants.map((user, index) => {
+            if(user.userId === pinnedVideo){
+              if (index > videoLayout.length - 1) {
+                return null;
+              }
+              return (
+                <Avatar
+                  participant={user}
+                  participantId={user.userId}
+                  handlePinVideo={handlePinVideo}
+                  key={user.userId}
+                  isActive={activeVideo === user.userId}
+                  volume={userVolumeList.find((u) => u.userId === user.userId)?.volume}
+                  setLocalVolume={setLocalVolume}
+                  advancedFeature={advancedSwitch[`${user.userId}`]}
+                  onAdvancedFeatureToggle={onAdvancedFeatureToggle}
+                  isUserCameraControlled={isControllingFarEnd}
+                  networkQuality={networkQuality[`${user.userId}`]}
+                />
+              )
+            }
+          })}
+      </div> */}
       <div
         className={classnames('video-container', {
-          'in-sharing': isSharing
+          // 'in-sharing': pinnedVideo
         })}
       >
         <canvas className="video-canvas" id="video-canvas" width="800" height="600" ref={videoRef} />
@@ -191,6 +190,8 @@ const VideoContainer: React.FunctionComponent<VideoContainerProps> = (props) => 
             return (
               <Avatar
                 participant={user}
+                participantId={user.userId}
+                handlePinVideo={handlePinVideo}
                 key={user.userId}
                 isActive={activeVideo === user.userId}
                 volume={userVolumeList.find((u) => u.userId === user.userId)?.volume}
@@ -210,13 +211,7 @@ const VideoContainer: React.FunctionComponent<VideoContainerProps> = (props) => 
           })}
         </ul>
       </div>
-      <VideoFooter handleChatDiv={props.handleChatDiv} handleInfoDivVisible={handleInfoDivVisible} className="video-operations" sharing shareRef={selfShareRef} />
-      {infoDivVisible ? 
-        <Draggable>
-          <div>
-            {doctorConsultationLines.map((line, index) => <div className='suggested-text' key={index}>{line}</div>)}
-          </div>
-        </Draggable> : ""}
+      <VideoFooter handleChatDiv={props.handleChatDiv} className="video-operations" sharing shareRef={selfShareRef} />
       {isControllingFarEnd && (
         <RemoteControlPanel
           turnDown={turnDown}

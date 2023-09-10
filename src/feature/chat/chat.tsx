@@ -1,169 +1,47 @@
-import React, { useCallback, useContext, useEffect, useState, useRef } from 'react';
-import produce from 'immer';
-import { Input } from 'antd';
-import { ChatPrivilege } from '@zoom/videosdk';
-import ZoomContext from '../../context/zoom-context';
-import { ChatReceiver, ChatRecord } from './chat-types';
-import { useParticipantsChange } from './hooks/useParticipantsChange';
-import ChatMessageItem from './component/chat-message-item';
-import ChatReceiverContainer from './component/chat-receiver';
+import React from 'react';
+import { Tag } from 'antd';
 
-import { useMount } from '../../hooks';
 import './chat.scss';
-const { TextArea } = Input;
-const ChatContainer = () => {
-  const zmClient = useContext(ZoomContext);
-  const chatClient = zmClient.getChatClient();
-  const [chatRecords, setChatRecords] = useState<ChatRecord[]>([]);
-  const [currentUserId, setCurrentUserId] = useState<number>(0);
-  const [chatReceivers, setChatReceivers] = useState<ChatReceiver[]>([]);
-  const [chatPrivilege, setChatPrivilege] = useState<ChatPrivilege>(ChatPrivilege.All);
-  const [chatUser, setChatUser] = useState<ChatReceiver | null>(null);
-  const [isHost, setIsHost] = useState<boolean>(false);
-  const [isManager, setIsManager] = useState<boolean>(false);
-  const [chatDraft, setChatDraft] = useState<string>('');
-  const chatWrapRef = useRef<HTMLDivElement | null>(null);
-  const onChatMessage = useCallback(
-    (payload: ChatRecord) => {
-      setChatRecords(
-        produce((records: ChatRecord[]) => {
-          const { length } = records;
-          if (length > 0) {
-            const lastRecord = records[length - 1];
-            if (
-              payload.sender.userId === lastRecord.sender.userId &&
-              payload.receiver.userId === lastRecord.receiver.userId &&
-              payload.timestamp - lastRecord.timestamp < 1000 * 60 * 5
-            ) {
-              if (Array.isArray(lastRecord.message)) {
-                lastRecord.message.push(payload.message as string);
-              } else {
-                lastRecord.message = [lastRecord.message, payload.message as string];
-              }
-            } else {
-              records.push(payload);
-            }
-          } else {
-            records.push(payload);
-          }
-        })
-      );
-      if (chatWrapRef.current) {
-        chatWrapRef.current.scrollTo(0, chatWrapRef.current.scrollHeight);
-      }
-    },
-    [chatWrapRef]
-  );
-  const onChatPrivilegeChange = useCallback(
-    (payload) => {
-      setChatPrivilege(payload.chatPrivilege);
-      if (chatClient) {
-        setChatReceivers(chatClient.getReceivers());
-      }
-    },
-    [chatClient]
-  );
+interface ChatProps {
+  chatUser:Number;
+}
 
-  useEffect(() => {
-    const historyChatList = chatClient.getHistory();
-    historyChatList.map((chat) => {
-      onChatMessage(chat)
-    })
-  }, [])
-  
-  const onChatInput = useCallback((event: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setChatDraft(event.target.value);
-  }, []);
-  useEffect(() => {
-    zmClient.on('chat-on-message', onChatMessage);
-    return () => {
-      zmClient.off('chat-on-message', onChatMessage);
-    };
-  }, [zmClient, onChatMessage]);
-  useEffect(() => {
-    zmClient.on('chat-privilege-change', onChatPrivilegeChange);
-    return () => {
-      zmClient.off('chat-privilege-change', onChatPrivilegeChange);
-    };
-  }, [zmClient, onChatPrivilegeChange]);
-  useParticipantsChange(zmClient, () => {
-    if (chatClient) {
-      setChatReceivers(chatClient.getReceivers());
-    }
-    setIsHost(zmClient.isHost());
-    // setIsManager(zmClient.isManager());
-  });
-  useEffect(() => {
-    if (chatUser) {
-      const index = chatReceivers.findIndex((user) => user.userId === chatUser.userId);
-      if (index === -1) {
-        setChatUser(chatReceivers[0]);
-      }
-    } else {
-      if (chatReceivers.length > 0) {
-        setChatUser(chatReceivers[0]);
-      }
-    }
-  }, [chatReceivers, chatUser]);
-  const setChatUserId = useCallback(
-    (userId) => {
-      const user = chatReceivers.find((u) => u.userId === userId);
-      if (user) {
-        setChatUser(user);
-      }
-    },
-    [chatReceivers]
-  );
-  const sendMessage = useCallback(
-    (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
-      event.preventDefault();
-      if (chatUser && chatDraft) {
-        chatClient?.send(chatDraft, chatUser?.userId);
-        setChatDraft('');
-      }
-    },
-    [chatClient, chatDraft, chatUser]
-  );
-  useMount(() => {
-    setCurrentUserId(zmClient.getSessionInfo().userId);
-    if (chatClient) {
-      setChatPrivilege(chatClient.getPrivilege());
-    }
-  });
+const doctorConsultationLines = [
+  "Hello, I'm Naveen, how can I help you today?",
+  "Please tell me more about your symptoms and when they started.",
+  "Have you experienced any changes in your medical history since our last visit?",
+  "Let's discuss any medications or treatments you're currently using.",
+  "Are you experiencing any pain or discomfort? If so, please describe it.",
+  "It's important to understand your concerns fully, so please feel free to ask any questions.",
+  "Based on your symptoms, I'm considering [possible diagnosis].",
+  "Here are the treatment options available, and we can discuss the pros and cons of each.",
+  "Let's create a personalized care plan tailored to your needs and preferences.",
+  "Remember, I'm here to support you, so don't hesitate to reach out if you have any concerns or if your condition changes."
+];
+
+const ChatContainer : React.FunctionComponent<ChatProps> = (props) => {
+  const { chatUser } = props
   return (
     <div className="chat-wrap">
-      <h2>Chat</h2>
-      <div className="chat-message-wrap" ref={chatWrapRef}>
-        {chatRecords.map((record) => (
-          <ChatMessageItem
-            record={record}
-            currentUserId={currentUserId}
-            setChatUser={setChatUserId}
-            key={record.timestamp}
-          />
-        ))}
-      </div>
-      {ChatPrivilege.NoOne !== chatPrivilege || isHost || isManager ? (
-        <>
-          <ChatReceiverContainer
-            chatUsers={chatReceivers}
-            selectedChatUser={chatUser}
-            isHostOrManager={isHost || isManager}
-            chatPrivilege={chatPrivilege}
-            setChatUser={setChatUserId}
-          />
-          <div className="chat-message-box">
-            <TextArea
-              onPressEnter={sendMessage}
-              onChange={onChatInput}
-              value={chatDraft}
-              placeholder="Type message here ..."
-            />
+      <div className='chat-user-detail'>
+        <div className='chat-user-bio'>
+          <h2>Naveen</h2>
+          <div>
+            <Tag color="magenta">Pregnant</Tag>
+            <Tag color="red">Depressed</Tag>
+            <Tag color="volcano">Disgusted</Tag>
           </div>
-        </>
-      ) : (
-        <div className="chat-disabled">Chat disabled</div>
-      )}
+        </div>
+        <ol className='user-problem-list'>
+          <li>- Preparing for a baby can be financially challenging</li>
+          <li>- Hormonal changes during pregnancy can influence mood.</li>
+          <li>- Physical discomforts, such as morning sickness, fatigue, and back pain, can contribute to feelings of frustration or depression.</li>
+        </ol>
+      </div>
+      <div className='chat-suggestion-message'>
+        {doctorConsultationLines.map((line, index) => <div className='suggested-text' key={index}>{line}</div>)}
+      </div>
+      
     </div>
   );
 };
