@@ -1,6 +1,5 @@
 # My Video - Online Video Conferencing Platform
 
-**Live Project:** [My Video](https://Myvideo.web.app)
 
 My Video is an online video conferencing platform that allows users to host and participate in virtual meetings. This README provides an overview of the project and lists upcoming features and tasks.
 
