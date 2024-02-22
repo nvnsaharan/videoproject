@@ -1,8 +1,8 @@
-# Soulside Video - Online Video Conferencing Platform
+# My Video - Online Video Conferencing Platform
 
-**Live Project:** [Soulside Video](https://soulsidevideo.web.app)
+**Live Project:** [My Video](https://Myvideo.web.app)
 
-Soulside Video is an online video conferencing platform that allows users to host and participate in virtual meetings. This README provides an overview of the project and lists upcoming features and tasks.
+My Video is an online video conferencing platform that allows users to host and participate in virtual meetings. This README provides an overview of the project and lists upcoming features and tasks.
 
 ## Features
 
@@ -25,10 +25,10 @@ Please refer instructions on how to clone the repository, install dependencies, 
 
 1. Clone the repository:
     ```bash
-    git clone https://github.com/your-username/soulside-video.git
+    git clone https://github.com/your-username/My-video.git
 2. Install dependencies:
     ```bash
-    cd soulside-video
+    cd My-video
     npm install
 3. Start the development server:
     ```bash
